@@ -1,0 +1,805 @@
+{
+  "log": {
+    "1": "Shape: (515, 15)\nClustering features: ['Age', 'Education', 'Annual_Income', 'Credit_Score', 'Loan_Amount', 'Loan_Term_Months']\nScaled matrix shape: (515, 6)\n\nAverage and spread of the scaled features (should be 0 and 1):\n      Age  Education  Annual_Income  Credit_Score  Loan_Amount  Loan_Term_Months\nmean  0.0       -0.0            0.0           0.0          0.0               0.0\nstd   1.0        1.0            1.0           1.0          1.0               1.0",
+    "2": "     Explained  Cumulative\nPC1      0.410       0.410\nPC2      0.177       0.587\nPC3      0.156       0.743\nPC4      0.141       0.884\nPC5      0.092       0.976\nPC6      0.024       1.000\n\nComponents needed to keep 95% of the information: 5 of 6\n\nWhat PC1 and PC2 are made of (loadings):\n                   PC1   PC2\nAge               0.50  0.39\nEducation         0.33 -0.38\nAnnual_Income     0.58  0.07\nCredit_Score      0.27 -0.39\nLoan_Amount       0.48  0.09\nLoan_Term_Months -0.07  0.73",
+    "3": "    Inertia  Silhouette  Davies_Bouldin\nk                                      \n2  2242.951       0.234           1.565\n3  1973.595       0.178           1.756\n4  1758.723       0.174           1.687\n5  1617.364       0.176           1.620\n6  1510.777       0.166           1.624\n7  1419.423       0.164           1.603\n8  1325.630       0.161           1.553\n\nChosen k = 2 (highest silhouette score)\nApplicants per cluster:\n0    253\n1    262\nName: count, dtype: int64",
+    "4": "          Silhouette  ARI_vs_KMeans  Smallest_cluster\nLinkage                                              \nward           0.170          0.336               198\ncomplete       0.224          0.412               167\naverage        0.244          0.001                 5\nsingle         0.265          0.000                 1\n\nK-Means (rows) vs Hierarchical (columns):\nHierarchical    0    1\nKMeans                \n0             231   22\n1              86  176\n\nAdjusted Rand Index between the two methods: 0.336  (1.0 = identical clusters)",
+    "5": "Cluster profiles in real units (Education: 0 = High School ... 3 = PhD):\n                         0          1\nSize                 253.0     262.00\nAge                   51.7      34.40\nEducation              1.5       0.97\nAnnual_Income     954572.0  608361.00\nCredit_Score         625.0     595.00\nLoan_Amount       911530.0  474332.00\nLoan_Term_Months      35.3      37.20\nApproval_%            68.4      54.60\n\nThe approval label was NOT used for clustering, so a difference in approval rate\nbetween clusters is an independent check that the clusters are meaningful.",
+    "6": "Train / test rows: 412 / 103\n\nCross-validation results (mean +/- standard deviation over 15 folds):\n                                  accuracy        precision           recall               f1  \\\nModel                                                                                           \nBaseline (always approve)  0.614 +/- 0.004  0.614 +/- 0.004  1.000 +/- 0.000  0.761 +/- 0.003   \nLogistic Regression        0.689 +/- 0.043  0.719 +/- 0.027  0.809 +/- 0.055  0.761 +/- 0.036   \nKNN                        0.653 +/- 0.038  0.684 +/- 0.029  0.809 +/- 0.047  0.741 +/- 0.030   \nRandom Forest              0.670 +/- 0.045  0.692 +/- 0.029  0.836 +/- 0.063  0.756 +/- 0.037   \n\n                                   roc_auc  \nModel                                       \nBaseline (always approve)  0.500 +/- 0.000  \nLogistic Regression        0.732 +/- 0.065  \nKNN                        0.654 +/- 0.063  \nRandom Forest              0.711 +/- 0.055  \n\nOverfitting check - AUC on the training folds vs on the validation folds:\n                           Train_AUC  Validation_AUC\nModel                                               \nBaseline (always approve)      0.500           0.500\nLogistic Regression            0.777           0.732\nKNN                            0.789           0.654\nRandom Forest                  1.000           0.711",
+    "7": "GridSearchCV tries every combination (5-fold CV, scored by ROC-AUC):\n                     Combinations  Model_fits  CV_AUC\nModel                                                \nLogistic Regression             4          20   0.738\nKNN                             8          40   0.717\nRandom Forest                  24         120   0.724\n\nLogistic Regression  best: {'C': 0.1}\nKNN                  best: {'n_neighbors': 31, 'weights': 'distance'}\nRandom Forest        best: {'max_depth': 4, 'min_samples_leaf': 5, 'n_estimators': 200}\n\nTop 5 Random Forest combinations from the grid:\n max_depth  min_samples_leaf  n_estimators  mean_test_score  std_test_score\n         4                 5           200            0.724           0.063\n         6                 5           100            0.722           0.071\n         4                 3           200            0.721           0.065\n         4                 5           100            0.721           0.068\n         6                 5           200            0.721           0.062\n\nGridSearchCV vs RandomizedSearchCV for the Random Forest:\n                                      Fits  Best_CV_AUC\nGridSearchCV (24 combinations)         120        0.724\nRandomizedSearchCV (20 random draws)   100        0.733\nRandomized best parameters: {'max_depth': 2, 'max_features': None, 'min_samples_leaf': 11, 'n_estimators': 219}\n\nValidation curve (Random Forest max_depth):\n           Train_AUC  Validation_AUC\nmax_depth                           \n1              0.775           0.688\n2              0.828           0.704\n3              0.870           0.708\n4              0.912           0.718\n6              0.980           0.717\n8              0.999           0.720\n10             1.000           0.712\n12             1.000           0.704",
+    "8": "                           Accuracy  Precision  Recall     F1  ROC_AUC\nModel                                                                 \nBaseline (always approve)     0.612      0.612   1.000  0.759    0.500\nLogistic Regression           0.718      0.736   0.841  0.785    0.756\nKNN                           0.650      0.671   0.841  0.746    0.749\nRandom Forest                 0.709      0.714   0.873  0.786    0.755\n\nBest model (highest cross-validated AUC): Logistic Regression\n\nConfusion matrix of Logistic Regression:\n                 Pred. Rejected  Pred. Approved\nActual Rejected              21              19\nActual Approved              10              53\n\nTN=21  FP=19  FN=10  TP=53\nPrecision = TP / (TP + FP) = 53/72 = 0.736\nRecall    = TP / (TP + FN) = 53/63 = 0.841\nSpecificity = TN / (TN + FP) = 21/40 = 0.525\n\nClassification report:\n              precision    recall  f1-score   support\n\n    Rejected      0.677     0.525     0.592        40\n    Approved      0.736     0.841     0.785        63\n\n    accuracy                          0.718       103\n   macro avg      0.707     0.683     0.688       103\nweighted avg      0.713     0.718     0.710       103",
+    "9": "Effect of the decision threshold for Logistic Regression:\n           Precision  Recall     F1  Accuracy\nThreshold                                    \n0.3            0.653   0.984  0.785     0.670\n0.4            0.686   0.937  0.792     0.699\n0.5            0.736   0.841  0.785     0.718\n0.6            0.780   0.730  0.754     0.709\n0.7            0.844   0.429  0.568     0.602\n0.8            0.824   0.222  0.350     0.495",
+    "10": "Built-in importance (LR: coefficient per 1 std for numeric columns, per 0->1 for dummies;\nRF: share of the total impurity reduction):\n                                 LR_coefficient  LR_rank  RF_importance  RF_rank\nCredit_Score                              0.869        1          0.405        1\nLoan_Amount                              -0.331        3          0.159        2\nAnnual_Income                             0.224        4          0.131        3\nAge                                       0.011       13          0.097        4\nLoan_Term_Months                         -0.030       12          0.046        5\nEducation                                 0.006       14          0.039        6\nGender                                   -0.184        5          0.022        7\nEmployment_Status_Unemployed             -0.337        2          0.021        8\nCity_Delhi                               -0.139        9          0.016        9\nCity_Mumbai                               0.103       10          0.016       10\nEmployment_Status_Salaried               -0.159        7          0.015       11\nCity_Lucknow                             -0.163        6          0.014       12\nCity_Kanpur                               0.154        8          0.011       13\nEmployment_Status_Self-Employed           0.076       11          0.008       14\n\nPermutation importance = drop in test ROC-AUC (mean of 30 shuffles):\n                                 Logistic Regression    KNN  Random Forest  Average\nCredit_Score                                   0.221  0.179          0.199    0.200\nAnnual_Income                                  0.023  0.001          0.004    0.009\nAge                                            0.002  0.013          0.011    0.008\nEmployment_Status_Unemployed                   0.005  0.001          0.009    0.005\nCity_Kanpur                                    0.007  0.001          0.002    0.004\nCity_Delhi                                     0.004  0.005          0.000    0.003\nLoan_Amount                                    0.010 -0.001         -0.001    0.003\nCity_Mumbai                                   -0.003  0.005          0.006    0.002\nGender                                         0.004 -0.001          0.003    0.002\nCity_Lucknow                                   0.005 -0.004          0.000    0.000\nEducation                                      0.000 -0.005          0.003   -0.000\nEmployment_Status_Self-Employed               -0.002  0.002         -0.006   -0.002\nEmployment_Status_Salaried                     0.001 -0.000         -0.007   -0.002\nLoan_Term_Months                              -0.000 -0.004         -0.010   -0.005\n\nTypical shuffle-to-shuffle noise (median std over the 14 features):\nLogistic Regression    0.005\nKNN                    0.013\nRandom Forest          0.004\nDifferences smaller than about twice this noise are not reliable.\n\nAgreement between the feature rankings (Spearman correlation):\n                           Perm. Logistic Regression  Perm. KNN  Perm. Random Forest  LR |coefficient|  \\\nPerm. Logistic Regression                       1.00       0.16                 0.34              0.79   \nPerm. KNN                                       0.16       1.00                 0.53              0.10   \nPerm. Random Forest                             0.34       0.53                 1.00              0.24   \nLR |coefficient|                                0.79       0.10                 0.24              1.00   \nRF impurity                                     0.45       0.02                 0.41              0.29   \n\n                           RF impurity  \nPerm. Logistic Regression         0.45  \nPerm. KNN                         0.02  \nPerm. Random Forest               0.41  \nLR |coefficient|                  0.29  \nRF impurity                       1.00",
+    "11": "11a. Cross-validated ROC-AUC (15 folds) for each feature set:\n                               Logistic Regression    KNN  Random Forest\nCredit score only                            0.731  0.661          0.716\n3 financial features                         0.742  0.713          0.736\n6 numeric features                           0.736  0.710          0.726\nAll 14 features                              0.734  0.698          0.718\nCredit score + loan-to-income                0.746  0.675          0.722\nAll 14 + loan-to-income                      0.737  0.703          0.719\n\n11b. Learning curves (5-fold CV at growing training sizes):\n                                Train_AUC  Validation_AUC    Gap\nModel               Train_rows                                  \nLogistic Regression 65              0.801           0.720  0.081\n                    131             0.793           0.744  0.049\n                    197             0.773           0.741  0.032\n                    263             0.775           0.742  0.033\n                    329             0.768           0.737  0.030\nKNN                 65              1.000           0.674  0.326\n                    131             1.000           0.692  0.308\n                    197             1.000           0.710  0.290\n                    263             1.000           0.707  0.293\n                    329             1.000           0.716  0.284\nRandom Forest       65              0.936           0.676  0.260\n                    131             0.938           0.713  0.225\n                    197             0.918           0.710  0.208\n                    263             0.903           0.726  0.177\n                    329             0.890           0.728  0.162\n\n11c. Paired comparison of the tuned models (same 15 folds):\n                                     Mean_AUC_diff      t  p_value  Folds_A_better\nComparison                                                                        \nLogistic Regression - KNN                    0.037  1.228    0.240              11\nLogistic Regression - Random Forest          0.016  1.248    0.233              11\nRandom Forest - KNN                          0.020  0.774    0.452               9\n\n11d. Approximate ceiling (true generating rule applied to the cleaned data):\nAUC on all 515 rows = 0.744, accuracy = 0.697, AUC on the 103 test rows = 0.759\nBest model on the test rows (Logistic Regression): AUC = 0.756\n(The label was drawn at random from these probabilities, so even the true rule cannot be perfect.)",
+    "12": "Out-of-fold results on all 515 applicants (a larger sample than the 103-row test set):\n                       AUC  Accuracy  Precision  Recall\nLogistic Regression  0.739     0.699      0.714   0.851\nKNN                  0.708     0.652      0.669   0.858\nRandom Forest        0.728     0.685      0.693   0.873\n\nHow many of the 3 models get an applicant wrong:\n   Applicants  Share_pct\n0         308       59.8\n1          50        9.7\n2          25        4.9\n3         132       25.6\n\nPairwise disagreement (share of applicants where two models give different answers):\n                     Logistic Regression    KNN  Random Forest\nLogistic Regression                0.000  0.117          0.072\nKNN                                0.117  0.000          0.103\nRandom Forest                      0.072  0.103          0.000\n\nError rate by credit-score quartile (Q1 = lowest scores):\n              Logistic Regression    KNN  Random Forest\nCredit_Score                                           \nQ1 lowest                   0.357  0.450          0.395\nQ2                          0.396  0.472          0.403\nQ3                          0.276  0.284          0.284\nQ4 highest                  0.159  0.159          0.159\n\nError rate by loan-to-income quartile (Q1 = smallest loan relative to income):\n            Logistic Regression    KNN  Random Forest\nQ1 lowest                 0.326  0.357          0.341\nQ2                        0.318  0.349          0.341\nQ3                        0.242  0.289          0.250\nQ4 highest                0.318  0.395          0.326\n\nError rate by employment status:\n               Logistic Regression    KNN  Random Forest\nBusiness                     0.286  0.306          0.286\nSalaried                     0.314  0.346          0.327\nSelf-Employed                0.247  0.358          0.284\nUnemployed                   0.370  0.481          0.370\n\nApproval rate actually observed in each credit-score quartile (%):\nCredit_Score\nQ1 lowest     31.8\nQ2            59.7\nQ3            71.6\nQ4 highest    84.1\nName: Approved, dtype: float64\n\nError of the best constant guess inside each band (what a model must beat to add value):\n            Credit_quartile  LTI_quartile\nQ1 lowest             0.318         0.310\nQ2                    0.403         0.372\nQ3                    0.284         0.414\nQ4 highest            0.159         0.450\n\nLogistic Regression mistakes: wrongly approved 21.0% of applicants, wrongly rejected 9.1%\n\nProfile of the 132 applicants that all three models get wrong vs those all get right:\n                       Wrong_for_all_3  Correct_for_all_3\nCredit score                    601.58             621.47\nLoan-to-income                    0.87               0.88\nIncome (Rs.)                 767042.09          803109.79\nActually approved (%)            21.21              81.49"
+  },
+  "best_k": 2,
+  "ari": 0.3358424661497275,
+  "best_model": "Logistic Regression",
+  "n95": 5,
+  "evr": [
+    0.4099480619961581,
+    0.17714335029750733,
+    0.1557534704310559,
+    0.14082623691340607,
+    0.09228794777379787,
+    0.024040932588074704
+  ],
+  "k_table": [
+    {
+      "k": 2,
+      "Inertia": 2242.9512778045,
+      "Silhouette": 0.2339500489,
+      "Davies_Bouldin": 1.5648561033
+    },
+    {
+      "k": 3,
+      "Inertia": 1973.5947306538,
+      "Silhouette": 0.1782707547,
+      "Davies_Bouldin": 1.75592756
+    },
+    {
+      "k": 4,
+      "Inertia": 1758.723227247,
+      "Silhouette": 0.1743013308,
+      "Davies_Bouldin": 1.6867246045
+    },
+    {
+      "k": 5,
+      "Inertia": 1617.3638622408,
+      "Silhouette": 0.1762825983,
+      "Davies_Bouldin": 1.6204911813
+    },
+    {
+      "k": 6,
+      "Inertia": 1510.7769075866,
+      "Silhouette": 0.1660397675,
+      "Davies_Bouldin": 1.6239133906
+    },
+    {
+      "k": 7,
+      "Inertia": 1419.4229065349,
+      "Silhouette": 0.1639084896,
+      "Davies_Bouldin": 1.603003585
+    },
+    {
+      "k": 8,
+      "Inertia": 1325.6301445033,
+      "Silhouette": 0.1609860489,
+      "Davies_Bouldin": 1.5526235816
+    }
+  ],
+  "profile": [
+    {
+      "Cluster": 0,
+      "Size": 253,
+      "Age": 51.7206660177,
+      "Education": 1.5019762846,
+      "Annual_Income": 954572.3776956494,
+      "Credit_Score": 624.7234566157,
+      "Loan_Amount": 911529.6691652274,
+      "Loan_Term_Months": 35.3324737705,
+      "Approval_%": 68.4
+    },
+    {
+      "Cluster": 1,
+      "Size": 262,
+      "Age": 34.38233396,
+      "Education": 0.9694656489,
+      "Annual_Income": 608361.116194659,
+      "Credit_Score": 594.7994865505,
+      "Loan_Amount": 474332.0771038069,
+      "Loan_Term_Months": 37.2342905956,
+      "Approval_%": 54.6
+    }
+  ],
+  "cv": [
+    {
+      "Model": "Baseline (always approve)",
+      "train_auc": 0.5,
+      "accuracy_mean": 0.6140758155,
+      "accuracy_std": 0.0044639397,
+      "precision_mean": 0.6140758155,
+      "precision_std": 0.0044639397,
+      "recall_mean": 1.0,
+      "recall_std": 0.0,
+      "f1_mean": 0.7608913736,
+      "f1_std": 0.0034199862,
+      "roc_auc_mean": 0.5,
+      "roc_auc_std": 0.0
+    },
+    {
+      "Model": "Logistic Regression",
+      "train_auc": 0.7765484237,
+      "accuracy_mean": 0.6885199334,
+      "accuracy_std": 0.0426454689,
+      "precision_mean": 0.7188547754,
+      "precision_std": 0.0267585509,
+      "recall_mean": 0.809124183,
+      "recall_std": 0.0546236582,
+      "f1_mean": 0.7608042716,
+      "f1_std": 0.0359262283,
+      "roc_auc_mean": 0.7323752372,
+      "roc_auc_std": 0.0651631495
+    },
+    {
+      "Model": "KNN",
+      "train_auc": 0.7888182423,
+      "accuracy_mean": 0.6529630718,
+      "accuracy_std": 0.0380737127,
+      "precision_mean": 0.6843732569,
+      "precision_std": 0.0289257129,
+      "recall_mean": 0.8089673203,
+      "recall_std": 0.0470688152,
+      "f1_mean": 0.740826268,
+      "f1_std": 0.0299068114,
+      "roc_auc_mean": 0.6543808244,
+      "roc_auc_std": 0.0634648511
+    },
+    {
+      "Model": "Random Forest",
+      "train_auc": 0.9996715185,
+      "accuracy_mean": 0.6699578803,
+      "accuracy_std": 0.0447883416,
+      "precision_mean": 0.6916407481,
+      "precision_std": 0.0291217297,
+      "recall_mean": 0.8355294118,
+      "recall_std": 0.0629305755,
+      "f1_mean": 0.7559327359,
+      "f1_std": 0.0370370788,
+      "roc_auc_mean": 0.7106474014,
+      "roc_auc_std": 0.0551278948
+    }
+  ],
+  "tuned": [
+    {
+      "Model": "Logistic Regression",
+      "Search": "Grid",
+      "Combinations": 4,
+      "Model_fits": 20,
+      "Best_parameters": "{'C': 0.1}",
+      "CV_AUC": 0.7376800285
+    },
+    {
+      "Model": "KNN",
+      "Search": "Grid",
+      "Combinations": 8,
+      "Model_fits": 40,
+      "Best_parameters": "{'n_neighbors': 31, 'weights': 'distance'}",
+      "CV_AUC": 0.7167167932
+    },
+    {
+      "Model": "Random Forest",
+      "Search": "Grid",
+      "Combinations": 24,
+      "Model_fits": 120,
+      "Best_parameters": "{'max_depth': 4, 'min_samples_leaf': 5, 'n_estimators': 200}",
+      "CV_AUC": 0.7241972644
+    }
+  ],
+  "rs_best": 0.7329856894370652,
+  "rf_grid_best": 0.7241972643896268,
+  "test": [
+    {
+      "Model": "Baseline (always approve)",
+      "Accuracy": 0.6116504854,
+      "Precision": 0.6116504854,
+      "Recall": 1.0,
+      "F1": 0.7590361446,
+      "ROC_AUC": 0.5
+    },
+    {
+      "Model": "Logistic Regression",
+      "Accuracy": 0.7184466019,
+      "Precision": 0.7361111111,
+      "Recall": 0.8412698413,
+      "F1": 0.7851851852,
+      "ROC_AUC": 0.7563492063
+    },
+    {
+      "Model": "KNN",
+      "Accuracy": 0.6504854369,
+      "Precision": 0.6708860759,
+      "Recall": 0.8412698413,
+      "F1": 0.7464788732,
+      "ROC_AUC": 0.7488095238
+    },
+    {
+      "Model": "Random Forest",
+      "Accuracy": 0.7087378641,
+      "Precision": 0.7142857143,
+      "Recall": 0.873015873,
+      "F1": 0.7857142857,
+      "ROC_AUC": 0.7551587302
+    }
+  ],
+  "thr": [
+    {
+      "Threshold": 0.3,
+      "Precision": 0.6526315789,
+      "Recall": 0.9841269841,
+      "F1": 0.7848101266,
+      "Accuracy": 0.6699029126
+    },
+    {
+      "Threshold": 0.4,
+      "Precision": 0.6860465116,
+      "Recall": 0.9365079365,
+      "F1": 0.7919463087,
+      "Accuracy": 0.6990291262
+    },
+    {
+      "Threshold": 0.5,
+      "Precision": 0.7361111111,
+      "Recall": 0.8412698413,
+      "F1": 0.7851851852,
+      "Accuracy": 0.7184466019
+    },
+    {
+      "Threshold": 0.6,
+      "Precision": 0.7796610169,
+      "Recall": 0.7301587302,
+      "F1": 0.7540983607,
+      "Accuracy": 0.7087378641
+    },
+    {
+      "Threshold": 0.7,
+      "Precision": 0.84375,
+      "Recall": 0.4285714286,
+      "F1": 0.5684210526,
+      "Accuracy": 0.6019417476
+    },
+    {
+      "Threshold": 0.8,
+      "Precision": 0.8235294118,
+      "Recall": 0.2222222222,
+      "F1": 0.35,
+      "Accuracy": 0.4951456311
+    }
+  ],
+  "cm": {
+    "tn": 21,
+    "fp": 19,
+    "fn": 10,
+    "tp": 53
+  },
+  "n_train": 412,
+  "n_test": 103,
+  "built_in": [
+    {
+      "Feature": "Age",
+      "LR_coefficient": 0.0106727312,
+      "LR_rank": 13,
+      "RF_importance": 0.0968239794,
+      "RF_rank": 4
+    },
+    {
+      "Feature": "Gender",
+      "LR_coefficient": -0.1841367096,
+      "LR_rank": 5,
+      "RF_importance": 0.0215362819,
+      "RF_rank": 7
+    },
+    {
+      "Feature": "Education",
+      "LR_coefficient": 0.0062528198,
+      "LR_rank": 14,
+      "RF_importance": 0.0391084329,
+      "RF_rank": 6
+    },
+    {
+      "Feature": "Annual_Income",
+      "LR_coefficient": 0.2242659493,
+      "LR_rank": 4,
+      "RF_importance": 0.1305768811,
+      "RF_rank": 3
+    },
+    {
+      "Feature": "Credit_Score",
+      "LR_coefficient": 0.8694528359,
+      "LR_rank": 1,
+      "RF_importance": 0.4049418828,
+      "RF_rank": 1
+    },
+    {
+      "Feature": "Loan_Amount",
+      "LR_coefficient": -0.3306242739,
+      "LR_rank": 3,
+      "RF_importance": 0.1586178075,
+      "RF_rank": 2
+    },
+    {
+      "Feature": "Loan_Term_Months",
+      "LR_coefficient": -0.0295009988,
+      "LR_rank": 12,
+      "RF_importance": 0.04615385,
+      "RF_rank": 5
+    },
+    {
+      "Feature": "City_Delhi",
+      "LR_coefficient": -0.1391584647,
+      "LR_rank": 9,
+      "RF_importance": 0.0164216433,
+      "RF_rank": 9
+    },
+    {
+      "Feature": "City_Kanpur",
+      "LR_coefficient": 0.1538542664,
+      "LR_rank": 8,
+      "RF_importance": 0.0108958089,
+      "RF_rank": 13
+    },
+    {
+      "Feature": "City_Lucknow",
+      "LR_coefficient": -0.1634551164,
+      "LR_rank": 6,
+      "RF_importance": 0.0143220119,
+      "RF_rank": 12
+    },
+    {
+      "Feature": "City_Mumbai",
+      "LR_coefficient": 0.1028896891,
+      "LR_rank": 10,
+      "RF_importance": 0.0158583478,
+      "RF_rank": 10
+    },
+    {
+      "Feature": "Employment_Status_Salaried",
+      "LR_coefficient": -0.1585908499,
+      "LR_rank": 7,
+      "RF_importance": 0.0154674427,
+      "RF_rank": 11
+    },
+    {
+      "Feature": "Employment_Status_Self-Employed",
+      "LR_coefficient": 0.0760107971,
+      "LR_rank": 11,
+      "RF_importance": 0.0083216951,
+      "RF_rank": 14
+    },
+    {
+      "Feature": "Employment_Status_Unemployed",
+      "LR_coefficient": -0.3374916691,
+      "LR_rank": 2,
+      "RF_importance": 0.0209539349,
+      "RF_rank": 8
+    }
+  ],
+  "perm": [
+    {
+      "Feature": "Age",
+      "Logistic Regression": 0.0016534392,
+      "KNN": 0.0132407407,
+      "Random Forest": 0.0105291005,
+      "Average": 0.0084744268
+    },
+    {
+      "Feature": "Gender",
+      "Logistic Regression": 0.0042063492,
+      "KNN": -0.0008465608,
+      "Random Forest": 0.0032671958,
+      "Average": 0.0022089947
+    },
+    {
+      "Feature": "Education",
+      "Logistic Regression": 0.0002248677,
+      "KNN": -0.0045767196,
+      "Random Forest": 0.0032804233,
+      "Average": -0.0003571429
+    },
+    {
+      "Feature": "Annual_Income",
+      "Logistic Regression": 0.0229761905,
+      "KNN": 0.0011243386,
+      "Random Forest": 0.0042724868,
+      "Average": 0.009457672
+    },
+    {
+      "Feature": "Credit_Score",
+      "Logistic Regression": 0.2211111111,
+      "KNN": 0.1789021164,
+      "Random Forest": 0.1986243386,
+      "Average": 0.1995458554
+    },
+    {
+      "Feature": "Loan_Amount",
+      "Logistic Regression": 0.0100661376,
+      "KNN": -0.0009126984,
+      "Random Forest": -0.0006481481,
+      "Average": 0.002835097
+    },
+    {
+      "Feature": "Loan_Term_Months",
+      "Logistic Regression": -0.0003042328,
+      "KNN": -0.003968254,
+      "Random Forest": -0.0100396825,
+      "Average": -0.0047707231
+    },
+    {
+      "Feature": "City_Delhi",
+      "Logistic Regression": 0.0044708995,
+      "KNN": 0.0048148148,
+      "Random Forest": 0.0004232804,
+      "Average": 0.0032363316
+    },
+    {
+      "Feature": "City_Kanpur",
+      "Logistic Regression": 0.007010582,
+      "KNN": 0.0011904762,
+      "Random Forest": 0.0023677249,
+      "Average": 0.0035229277
+    },
+    {
+      "Feature": "City_Lucknow",
+      "Logistic Regression": 0.0049074074,
+      "KNN": -0.0038359788,
+      "Random Forest": 0.0001984127,
+      "Average": 0.0004232804
+    },
+    {
+      "Feature": "City_Mumbai",
+      "Logistic Regression": -0.0034259259,
+      "KNN": 0.004510582,
+      "Random Forest": 0.0056084656,
+      "Average": 0.0022310406
+    },
+    {
+      "Feature": "Employment_Status_Salaried",
+      "Logistic Regression": 0.0013227513,
+      "KNN": -0.0004232804,
+      "Random Forest": -0.007010582,
+      "Average": -0.002037037
+    },
+    {
+      "Feature": "Employment_Status_Self-Employed",
+      "Logistic Regression": -0.0019179894,
+      "KNN": 0.0023412698,
+      "Random Forest": -0.0056746032,
+      "Average": -0.0017504409
+    },
+    {
+      "Feature": "Employment_Status_Unemployed",
+      "Logistic Regression": 0.0054497354,
+      "KNN": 0.0006084656,
+      "Random Forest": 0.0093783069,
+      "Average": 0.0051455026
+    }
+  ],
+  "perm_noise": {
+    "Logistic Regression": 0.004908656566557094,
+    "KNN": 0.013045253609536771,
+    "Random Forest": 0.004313227099092289
+  },
+  "agree": [
+    {
+      "Name": "Perm. Logistic Regression",
+      "Perm. Logistic Regression": 1.0,
+      "Perm. KNN": 0.1604395604,
+      "Perm. Random Forest": 0.3362637363,
+      "LR |coefficient|": 0.789010989,
+      "RF impurity": 0.4505494505
+    },
+    {
+      "Name": "Perm. KNN",
+      "Perm. Logistic Regression": 0.1604395604,
+      "Perm. KNN": 1.0,
+      "Perm. Random Forest": 0.5340659341,
+      "LR |coefficient|": 0.1032967033,
+      "RF impurity": 0.0241758242
+    },
+    {
+      "Name": "Perm. Random Forest",
+      "Perm. Logistic Regression": 0.3362637363,
+      "Perm. KNN": 0.5340659341,
+      "Perm. Random Forest": 1.0,
+      "LR |coefficient|": 0.2351648352,
+      "RF impurity": 0.410989011
+    },
+    {
+      "Name": "LR |coefficient|",
+      "Perm. Logistic Regression": 0.789010989,
+      "Perm. KNN": 0.1032967033,
+      "Perm. Random Forest": 0.2351648352,
+      "LR |coefficient|": 1.0,
+      "RF impurity": 0.2923076923
+    },
+    {
+      "Name": "RF impurity",
+      "Perm. Logistic Regression": 0.4505494505,
+      "Perm. KNN": 0.0241758242,
+      "Perm. Random Forest": 0.410989011,
+      "LR |coefficient|": 0.2923076923,
+      "RF impurity": 1.0
+    }
+  ],
+  "ablation": [
+    {
+      "Set": "Credit score only",
+      "Logistic Regression": 0.7305743728,
+      "KNN": 0.6610695762,
+      "Random Forest": 0.716020359
+    },
+    {
+      "Set": "3 financial features",
+      "Logistic Regression": 0.742066361,
+      "KNN": 0.7130754533,
+      "Random Forest": 0.7363901012
+    },
+    {
+      "Set": "6 numeric features",
+      "Logistic Regression": 0.7358166245,
+      "KNN": 0.7099422307,
+      "Random Forest": 0.7262770926
+    },
+    {
+      "Set": "All 14 features",
+      "Logistic Regression": 0.7341977388,
+      "KNN": 0.6976444234,
+      "Random Forest": 0.7178733924
+    },
+    {
+      "Set": "Credit score + loan-to-income",
+      "Logistic Regression": 0.745818891,
+      "KNN": 0.6751637413,
+      "Random Forest": 0.7224207253
+    },
+    {
+      "Set": "All 14 + loan-to-income",
+      "Logistic Regression": 0.7373282732,
+      "KNN": 0.7033123023,
+      "Random Forest": 0.7186067099
+    }
+  ],
+  "learning": {
+    "Logistic Regression": {
+      "n": [
+        65,
+        131,
+        197,
+        263,
+        329
+      ],
+      "train": [
+        0.8013820587449929,
+        0.7933762549338226,
+        0.7730544389530845,
+        0.774888105746783,
+        0.7677926226850107
+      ],
+      "val": [
+        0.7199006166982922,
+        0.7444082068311195,
+        0.7407710309930424,
+        0.7415788266919672,
+        0.7373080328905756
+      ]
+    },
+    "KNN": {
+      "n": [
+        65,
+        131,
+        197,
+        263,
+        329
+      ],
+      "train": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "val": [
+        0.6741208886780519,
+        0.6921052340290956,
+        0.7097950664136622,
+        0.707151723592663,
+        0.7163372865275142
+      ]
+    },
+    "Random Forest": {
+      "n": [
+        65,
+        131,
+        197,
+        263,
+        329
+      ],
+      "train": [
+        0.9358835900472672,
+        0.9383974836603489,
+        0.9182613586037196,
+        0.9033511094974225,
+        0.8897843452580222
+      ],
+      "val": [
+        0.6758542061986084,
+        0.7131462681846932,
+        0.7103493042378243,
+        0.7263958728652751,
+        0.7277454933586338
+      ]
+    }
+  },
+  "paired": [
+    {
+      "Comparison": "Logistic Regression - KNN",
+      "Mean_AUC_diff": 0.0365533154,
+      "t": 1.2283631917,
+      "p_value": 0.2395610539,
+      "Folds_A_better": 11
+    },
+    {
+      "Comparison": "Logistic Regression - Random Forest",
+      "Mean_AUC_diff": 0.0163243464,
+      "t": 1.2477064254,
+      "p_value": 0.2326055813,
+      "Folds_A_better": 11
+    },
+    {
+      "Comparison": "Random Forest - KNN",
+      "Mean_AUC_diff": 0.020228969,
+      "t": 0.7735106185,
+      "p_value": 0.4520842302,
+      "Folds_A_better": 9
+    }
+  ],
+  "ceiling": {
+    "AUC": 0.7438140067425736,
+    "Accuracy": 0.6970873786407767,
+    "AUC_test_rows": 0.7591269841269841
+  },
+  "oof": [
+    {
+      "Model": "Logistic Regression",
+      "AUC": 0.7393772661,
+      "Accuracy": 0.6990291262,
+      "Precision": 0.7135278515,
+      "Recall": 0.8512658228
+    },
+    {
+      "Model": "KNN",
+      "AUC": 0.7083995929,
+      "Accuracy": 0.6524271845,
+      "Precision": 0.6691358025,
+      "Recall": 0.8575949367
+    },
+    {
+      "Model": "Random Forest",
+      "AUC": 0.7282774633,
+      "Accuracy": 0.6854368932,
+      "Precision": 0.6934673367,
+      "Recall": 0.8734177215
+    }
+  ],
+  "n_wrong": {
+    "0": 308,
+    "1": 50,
+    "2": 25,
+    "3": 132
+  },
+  "err_credit": [
+    {
+      "Credit_Score": "Q1 lowest",
+      "Logistic Regression": 0.3565891473,
+      "KNN": 0.4496124031,
+      "Random Forest": 0.3953488372
+    },
+    {
+      "Credit_Score": "Q2",
+      "Logistic Regression": 0.3958333333,
+      "KNN": 0.4722222222,
+      "Random Forest": 0.4027777778
+    },
+    {
+      "Credit_Score": "Q3",
+      "Logistic Regression": 0.275862069,
+      "KNN": 0.2844827586,
+      "Random Forest": 0.2844827586
+    },
+    {
+      "Credit_Score": "Q4 highest",
+      "Logistic Regression": 0.1587301587,
+      "KNN": 0.1587301587,
+      "Random Forest": 0.1587301587
+    }
+  ],
+  "err_lti": [
+    {
+      "Band": "Q1 lowest",
+      "Logistic Regression": 0.3255813953,
+      "KNN": 0.3565891473,
+      "Random Forest": 0.3410852713
+    },
+    {
+      "Band": "Q2",
+      "Logistic Regression": 0.3178294574,
+      "KNN": 0.3488372093,
+      "Random Forest": 0.3410852713
+    },
+    {
+      "Band": "Q3",
+      "Logistic Regression": 0.2421875,
+      "KNN": 0.2890625,
+      "Random Forest": 0.25
+    },
+    {
+      "Band": "Q4 highest",
+      "Logistic Regression": 0.3178294574,
+      "KNN": 0.3953488372,
+      "Random Forest": 0.3255813953
+    }
+  ],
+  "approval_credit": [
+    0.3178294573643411,
+    0.5972222222222222,
+    0.7155172413793104,
+    0.8412698412698413
+  ],
+  "approval_lti": [
+    0.689922480620155,
+    0.627906976744186,
+    0.5859375,
+    0.5503875968992248
+  ],
+  "base_credit": [
+    0.3178294573643411,
+    0.4027777777777778,
+    0.2844827586206896,
+    0.15873015873015872
+  ],
+  "base_lti": [
+    0.31007751937984496,
+    0.37209302325581395,
+    0.4140625,
+    0.4496124031007752
+  ],
+  "err_emp": [
+    {
+      "Band": "Business",
+      "Logistic Regression": 0.2857142857,
+      "KNN": 0.306122449,
+      "Random Forest": 0.2857142857
+    },
+    {
+      "Band": "Salaried",
+      "Logistic Regression": 0.3139158576,
+      "KNN": 0.3462783172,
+      "Random Forest": 0.3268608414
+    },
+    {
+      "Band": "Self-Employed",
+      "Logistic Regression": 0.2469135802,
+      "KNN": 0.3580246914,
+      "Random Forest": 0.2839506173
+    },
+    {
+      "Band": "Unemployed",
+      "Logistic Regression": 0.3703703704,
+      "KNN": 0.4814814815,
+      "Random Forest": 0.3703703704
+    }
+  ],
+  "hard": [
+    {
+      "Measure": "Credit score",
+      "Wrong_for_all_3": 601.5782682344,
+      "Correct_for_all_3": 621.4738409862
+    },
+    {
+      "Measure": "Loan-to-income",
+      "Wrong_for_all_3": 0.8732886666,
+      "Correct_for_all_3": 0.8818465443
+    },
+    {
+      "Measure": "Income (Rs.)",
+      "Wrong_for_all_3": 767042.0921161673,
+      "Correct_for_all_3": 803109.7867325358
+    },
+    {
+      "Measure": "Actually approved (%)",
+      "Wrong_for_all_3": 21.2121212121,
+      "Correct_for_all_3": 81.4935064935
+    }
+  ]
+}

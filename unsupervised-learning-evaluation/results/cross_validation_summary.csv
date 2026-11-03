@@ -1,0 +1,5 @@
+Model,train_auc,accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std,roc_auc_mean,roc_auc_std
+Baseline (always approve),0.5,0.6141,0.0045,0.6141,0.0045,1.0,0.0,0.7609,0.0034,0.5,0.0
+Logistic Regression,0.7765,0.6885,0.0426,0.7189,0.0268,0.8091,0.0546,0.7608,0.0359,0.7324,0.0652
+KNN,0.7888,0.653,0.0381,0.6844,0.0289,0.809,0.0471,0.7408,0.0299,0.6544,0.0635
+Random Forest,0.9997,0.67,0.0448,0.6916,0.0291,0.8355,0.0629,0.7559,0.037,0.7106,0.0551

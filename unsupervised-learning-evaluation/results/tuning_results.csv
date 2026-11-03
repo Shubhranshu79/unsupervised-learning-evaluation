@@ -1,0 +1,4 @@
+Model,Search,Combinations,Model_fits,Best_parameters,CV_AUC
+Logistic Regression,Grid,4,20,{'C': 0.1},0.7376800284629981
+KNN,Grid,8,40,"{'n_neighbors': 31, 'weights': 'distance'}",0.7167167931688805
+Random Forest,Grid,24,120,"{'max_depth': 4, 'min_samples_leaf': 5, 'n_estimators': 200}",0.7241972643896268

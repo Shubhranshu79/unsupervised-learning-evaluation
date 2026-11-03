@@ -1,0 +1,15 @@
+,LR_coefficient,LR_rank,RF_importance,RF_rank
+Age,0.0107,13,0.0968,4
+Gender,-0.1841,5,0.0215,7
+Education,0.0063,14,0.0391,6
+Annual_Income,0.2243,4,0.1306,3
+Credit_Score,0.8695,1,0.4049,1
+Loan_Amount,-0.3306,3,0.1586,2
+Loan_Term_Months,-0.0295,12,0.0462,5
+City_Delhi,-0.1392,9,0.0164,9
+City_Kanpur,0.1539,8,0.0109,13
+City_Lucknow,-0.1635,6,0.0143,12
+City_Mumbai,0.1029,10,0.0159,10
+Employment_Status_Salaried,-0.1586,7,0.0155,11
+Employment_Status_Self-Employed,0.076,11,0.0083,14
+Employment_Status_Unemployed,-0.3375,2,0.021,8
