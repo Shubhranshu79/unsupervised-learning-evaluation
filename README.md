@@ -66,21 +66,5 @@ segments, not as sharply separate populations.
 | Is the ranking real? | **Not statistically established.** Logistic Regression leads by +0.016 (vs Random Forest) and +0.037 (vs KNN) AUC, corrected paired p = 0.23 and 0.24. |
 | Could a better model do much better? | Probably not. The true generating rule gives AUC 0.744 on all rows; Logistic Regression reaches 0.739 out-of-fold. 25.6% of applicants are wrong for all three models, and within credit-score bands the models barely beat a constant guess. |
 
-## Repository structure
 
-```
-data/loan_applicants_clean.csv           cleaned dataset from Week 1
-src/clustering_and_evaluation.py         PCA, clustering, evaluation, tuning, thresholds, model analysis
-src/build_report.py                      builds the PDF report
-results/                                 metric tables (CSV), charts (PNG), clustered data, log
-models/best_classifier.joblib            saved best classifier
-report/                                  PDF report
-```
 
-## How to run
-
-```bash
-pip install -r requirements.txt
-python3 src/clustering_and_evaluation.py   # runs everything, writes results/ and models/
-python3 src/build_report.py                # optional: rebuilds the PDF report
-```
