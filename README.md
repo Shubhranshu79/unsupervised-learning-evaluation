@@ -66,8 +66,6 @@ segments, not as sharply separate populations.
 | Is the ranking real? | **Not statistically established.** Logistic Regression leads by +0.016 (vs Random Forest) and +0.037 (vs KNN) AUC, corrected paired p = 0.23 and 0.24. |
 | Could a better model do much better? | Probably not. The true generating rule gives AUC 0.744 on all rows; Logistic Regression reaches 0.739 out-of-fold. 25.6% of applicants are wrong for all three models, and within credit-score bands the models barely beat a constant guess. |
 
-Full explanation, code, outputs and charts: [`report/Week3_Clustering_and_Model_Evaluation_Report.pdf`](report/Week3_Clustering_and_Model_Evaluation_Report.pdf)
-
 ## Repository structure
 
 ```
